@@ -1,0 +1,138 @@
+{extend name="public/base" /}
+{block name="title"}
+{$articleInfo.title}--{$webInfo.webname}
+{/block}
+{block name="copyright"}
+{$webInfo.copyright}
+{/block}
+{block name="content"}
+<div class="row">
+    <div class="col-sm-12 col-md-8">
+        <nav class="">
+            <!-- <ul class="pagination">
+                 <li class="disabled"><a href="#">&laquo;</a></li>
+                 <li class="active"><a href="#">1</a></li>
+                 <li><a href="#">2</a></li>
+                 <li><a href="#">3</a></li>
+                 <li><a href="#">4</a></li>
+                 <li><a href="#">5</a></li>
+                 <li><a href="#">&raquo;</a></li>
+             </ul>-->
+        </nav>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-md-8">
+                    <h1 class="article-title">{$articleInfo.title}</h1>
+                    <div class="status">{$articleInfo.click}阅读-{$articleInfo.comments}评论-作者：{$articleInfo.author}
+                        {volist name="articleInfo.tags|strToArray" id="tags"}
+                        <span class="label label-default">{$tags}</span>
+                        {/volist}  <!-- mb_substr=0,3,'utf-8' 截取字符串输出-->
+                    </div>
+                    <div class="article-content">
+                        <blockquote>
+                            {$articleInfo.desc}
+                        </blockquote>
+
+                        {$articleInfo.content|raw}
+                    </div>
+                    <div class="article-comment">
+                        <div class="page-header"><b>相关评论</b></div>
+                        <div class="comment-content">
+                            <form action="#">
+                                <input type="hidden" name="article_id" value="{$articleInfo.id}">
+                                <input type="hidden" name="member_id" value="{:session('index.id')}">
+                                <div class="form-group">
+                                    <textarea class="form-control" id="commentcontent" name="commentcontent" rows="5"
+                                              cols=""></textarea>
+                                </div>
+                                <div class="form-group pull-right">
+                                    <button class="btn btn-primary" type="submit" id="comment">评论（请认真评论）</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="comment-list">
+                            {volist name="articleInfo.commenton" id="comment"}
+                            <div class="comment-list-item">
+                                <div class="info">{$comment.member.nickname}<small>{$comment.create_time}</small></div>
+                                <div class="content">{$comment.content}</div>
+                            </div>
+                            {/volist}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <div class="affix">
+                        <div class="page-header h3">推荐文章</div>
+                        <div class="topic-list">
+                            {volist name="topArticles" id="topArticle"}
+                            <div class="topic-list-item">
+                                <a href="{:url('index/article/info',['id'=>$topArticle.id])}"
+                                   class="title">{$topArticle.title}</a>
+                            </div>
+                            {/volist}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+<script src="/index/js/jquery-3.3.1.min.js"></script>
+<script src="/index/js/bootstrap.min.js"></script>
+<script>
+
+    /*var context = $('.article-content').text();
+    $('.article-content').empty();
+    $('.article-content').append(context);  输出为html格式   */
+
+</script>
+{block name="js"}
+<script>
+    $(function () {
+        $('#comment').click(function () {
+            if ("{:session('?index.id')}"){
+                $.ajax({
+                    url: "{:url('index/article/comment')}",
+                    type: 'post',
+                    data: $('form').serialize(),
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.code == 1) {
+                            layer.msg(data.msg, {
+                                icon: 6,
+                                time: 1000,
+                            }, function () {
+                                location.href=location.href;
+                            });
+                        } else {
+                            layer.open({
+                                title: '评论失败',
+                                content: data.msg,
+                                icon: 5,
+                                anim: 6
+                            }, function () {
+                                location.replace(location.href);
+                            });
+                        }
+                    }
+                });
+            }else {
+               layer.open({
+                   title:'登录提示',
+                   content:'您还没有登录，请先登录！',
+                   icon:5,
+                   anim: 6
+               });
+            }
+            return false;
+        });
+    });
+
+
+</script>
+
+
+{/block}
+

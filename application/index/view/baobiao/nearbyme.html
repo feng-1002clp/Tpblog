@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>附近门店</title>
+</head>
+<style>
+    ul li{
+        list-style: none;
+    }
+</style>
+<body>
+{volist name="storesInfo" id="store"}
+<ul style="border:1px solid #3ecdf1;margin:0 auto;width: 400px;height: 50px;">
+    <li style="float: left">{$store.name}  &nbsp; {$store.province}.{$store.city}.{$store.area}</li>
+    <li style="float: right;margin-left: 20px;color: lightcoral;">距离你：{$distance[$key]}.km</li>
+    <p>{$store.lat}，{$store.lng}</p>
+</ul>
+{/volist}
+</body>
+</html>

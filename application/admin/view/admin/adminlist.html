@@ -1,0 +1,166 @@
+{include file="public/_head"/}
+<!-- Main Container -->
+<div class="main-container container-fluid">
+    <!-- Page Container -->
+    <div class="page-container">
+
+        {include file="public/_left"/}
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li class="active">
+                        <i class="fa fa-home"></i>&nbsp;管理员管理
+                    </li>
+                    <li>管理员列表</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <a href="adminadd.html" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i>&nbsp;添加管理员</a>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <span class="widget-caption">管理员列表</span>
+                                <div class="widget-buttons">
+                                    <!--<ul class="pagination pagination-sm">
+                                        <li class="disabled"><a href="#">«</a></li>
+                                        <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+                                        <li><a href="#">2</a></li>
+                                        <li><a href="#">3</a></li>
+                                        <li><a href="#">»</a></li>
+                                    </ul>-->
+                                    {$admins|raw|labelchanged}
+                                </div>
+                            </div>
+                            <div class="widget-body">
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>管理员名称</th>
+                                        <th>管理员昵称</th>
+                                        <th>管理员邮箱</th>
+                                        <td>管理员权限</td>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {volist name="$admins" id="admin"}
+                                    <tr>
+                                        <td>{$admin.id}</td>
+                                        <td>{$admin.username}</td>
+                                        <td>{$admin.nickname}</td>
+                                        <td>{$admin.email}</td>
+                                        <td>{if $admin.is_super==1}有{else/}无{/if}</td>
+                                        <td>
+                                            {if $admin.is_super==1}<a href="#" class="btn btn-sm btn-warning admin-super" issuper="{$admin.is_super}" dataid="{$admin.id}">撤回权限</a>
+                                            {else /}<a href="#" class="btn btn-sm btn-blue admin-super" issuper="{$admin.is_super}" dataid="{$admin.id}">赋予权限</a>{/if}
+                                            <a href="{:url('admin/admin/adminedit',['id'=>$admin.id])}" class="btn btn-azure btn-xs">编辑</a>
+                                            <a href="#" class="btn btn-danger btn-xs admindel" dataid="{$admin.id}">删除</a>
+                                        </td>
+                                    </tr>
+                                    {/volist}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+        <!-- /Page Content -->
+    </div>
+</div>
+
+{include file="public/_js"/}
+<script>
+    $(function () {
+        $('.pagination').addClass('pagination-sm');
+
+        $('.admin-super').click(function () {
+            var id = $(this).attr('dataid');
+            var is_super = $(this).attr('issuper');
+
+            if (is_super==1){
+                var msg = '确认将该管理员撤销超级管理员权限嘛?';
+            }else{
+                var msg = '确认将该管理员赋予超级管理员权限嘛?';
+            }
+            layer.confirm(msg,{
+                title:'推荐操作设置',
+                icon:3
+            },function (index) {
+                layer.close(index);
+                $.ajax({
+                    url: "{:url('admin/admin/adminissuper')}",
+                    type: 'post',
+                    data:{id:id,is_super:is_super},
+                    dataType:'json',
+                    success:function (data) {
+                        if (data.code == 1) {
+                            layer.msg(data.msg, {
+                                icon: 1,
+                                anim: 5,
+                            }, function () {
+                                location.href = "{:url('admin/admin/adminlist')}";
+                            });
+                        } else {
+                            layer.msg(data.msg, {
+                                icon: 2,
+                                anim: 6,
+                            });
+                        }
+                    }
+                })
+            });
+
+            return false;
+        });
+
+
+        $('.admindel').click(function () {
+            var id = $(this).attr('dataid');
+            layer.confirm('确定删除嘛？',{
+                title: '管理员删除',
+                icon:3,
+                anim: 6,
+            },function (index) {
+                layer.close(index);
+                $.ajax({
+                    url:"{:url('admin/admin/admindel')}",
+                    type:'post',
+                    data:{id:id},
+                    dataType: 'json',
+                    success:function (data) {
+                        if (data.code==1){
+                            layer.msg(data.msg,{
+                                icon:1,
+                                anim:5,
+                            },function () {
+                                location.href="{:url('admin/admin/adminlist')}";
+                            });
+                        }else {
+                            layer.msg(data.msg,{
+                                icon:2,
+                                anim:6,
+                            });
+                        }
+                    }
+                });
+                return false;
+            });
+            return false;
+        });
+
+
+    });
+</script>
+
+</body>
+<!--  /Body -->
+</html>

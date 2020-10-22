@@ -1,0 +1,162 @@
+{include file="public/_head"/}
+<!-- Main Container -->
+<div class="main-container container-fluid">
+    <!-- Page Container -->
+    <div class="page-container">
+
+        {include file="public/_left"/}
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>&nbsp;文章管理
+                    </li>
+                    <li>文章编辑</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <div class="page-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget radius-bordered">
+                            <div class="widget-header bordered-bottom bordered-themeprimary">
+                                <span class="widget-caption">文章编辑</span>
+                            </div>
+                            <div class="widget-body">
+                                <form class="layui-form" action="">
+                                    <input type="hidden" name="id" value="{$articleInfo.id}">
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label" style="width: 100px;">文章标题</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="title" id="title" required lay-verify="required"
+                                                   placeholder="请输入文章标题" autocomplete="off" class="layui-input"
+                                                   value="{$articleInfo.title}"
+                                                   lay-verify="title">
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label" style="width: 100px;">文章标签</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" name="tags" id="tags" required lay-verify="required"
+                                                   value="{$articleInfo.tags}" placeholder="文章标签以' | '号分割"
+                                                   autocomplete="off" class="layui-input">
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label" style="width: 100px;">文章栏目</label>
+                                        <div class="layui-input-block">
+                                            <select name="cate_id" id="cate_id" lay-verify="required" class="form-control">
+                                                <option value=""></option>
+                                                {volist name="cates" id="cate"}
+                                                <option value="{$cate.id}"
+                                                        {if $articleInfo.cate_id == $cate.id}selected{/if}>{$cate.catename}</option>
+                                                {/volist}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label" style="width: 100px;">上推荐吗</label>
+                                        <div class="layui-input-block">
+                                            <input type="checkbox" name="is_top" title="上推荐" value="1"  {if $articleInfo.is_top ==1}checked{/if}>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item layui-form-text">
+                                        <label class="layui-form-label" style="width: 100px;">文章描述</label>
+                                        <div class="layui-input-block">
+                                            <textarea name="desc" placeholder="请输入描述内容" class="layui-textarea">
+                                                {$articleInfo.desc}
+                                            </textarea>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item layui-form-text">
+                                        <label class="layui-form-label" style="width: 100px;">文章内容</label>
+                                        <div class="layui-input-block">
+                                            <textarea name="content" id="content" placeholder="请输入内容"
+                                                      class="layui-textarea" lay-verify="content">
+                                                    {$articleInfo.content}
+                                            </textarea>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-input-block">
+                                            <button class="layui-btn" id="sbmt" lay-submit lay-filter="formDemo">提交修改
+                                            </button>
+                                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{include file="public/_js"/}
+<script>
+
+    $(function () {
+
+        layui.use(['layedit', 'form'], function () {
+            var layedit = layui.layedit;
+            var form = layui.form;
+
+            var index = layedit.build('content'); //建立编辑器
+            layedit.set({
+                uploadImage: {
+                    url: '' //接口url
+                    , type: '' //默认post
+                }
+
+            });
+
+            //自定义验证规则  将富文本编辑框的值同步到textarea上
+            form.verify({
+                content: function (value) {
+                    layedit.sync(index);
+                }
+            });
+
+            form.on('submit(formDemo)', function (data) {
+                $.ajax({
+                    url: "{:url('admin/article/articleedit')}",
+                    type: 'post',
+                    data: data.field,
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.code == 1) {
+                            layer.msg(data.msg, {
+                                icon: 6,
+                                time: 2000,
+                            }, function () {
+                                location.href = data.url;
+                            });
+                        } else {
+                            layer.open({
+                                title: '文章编辑失败失败',
+                                content: data.msg,
+                                icon: 5,
+                                anim: 6
+                            });
+                        }
+                    }
+                });
+                return false;
+            });
+
+        });
+
+    });
+
+
+</script>
+
+
+</body>
+<!--  /Body -->
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>666</title>
+</head>
+<body>
+<input type="button" class="nearbystores" value="附近门店">
+<script src="/static/admin/js/jquery.min.js"></script>
+<script>
+
+   /* if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(onSuccess , onError);
+    }else{
+        alert("您的浏览器不支持使用HTML 5来获取地理位置服务");
+    }
+    //定位数据获取成功响应
+    function  onSuccess(position){
+        alert('纬度: '          + position.coords.latitude          + '\n' +
+            '经度: '         + position.coords.longitude         + '\n' +
+            '海拔: '          + position.coords.altitude          + '\n' +
+            '水平精度: '          + position.coords.accuracy          + '\n' +
+            '垂直精度: ' + position.coords.altitudeAccura)
+    }
+    //定位数据获取失败响应
+    function onError(error) {
+        switch(error.code)
+        {
+            case error.PERMISSION_DENIED:
+                alert("您拒绝对获取地理位置的请求");
+                break;
+            case error.POSITION_UNAVAILABLE:
+                alert("位置信息是不可用的");
+                break;
+            case error.TIMEOUT:
+                alert("请求您的地理位置超时");
+                break;
+            case error.UNKNOWN_ERROR:
+                alert("未知错误");
+                break;
+        }
+    }*/
+
+   if(navigator.geolocation) {
+       navigator.geolocation.getCurrentPosition(
+           function (position) {
+               console.log( position.coords.longitude );
+               console.log( position.coords.latitude );
+           },
+           function (e) {
+               throw(e.message);
+           }
+       )
+   }
+
+
+
+    /*$('.nearbystores').click(function () {
+       getMyPosition();
+    });
+
+    function getMyPosition() {
+        if (window.navigator.geolocation){
+            //获取当前位置
+            alert('正在获取当前位置！');
+            //如果获取当前位置成功 调用successPosition方法
+            navigator.geolocation.getCurrentPosition(successPosition,errorPosition);
+        }
+    }
+    function successPosition(position) {
+        var lng = position.coords.longitude; //经度
+        var lat = position.coords.latitude;  //纬度
+        alert(lng+","+lat);
+    }
+    function errorPosition() {
+        alert('获取定位失败！');
+    }*/
+</script>
+<!--{volist name="storesInfo" id="store"}
+<ul>
+    <li>{$store.name}</li>
+    <li>{$store.province}</li>
+    <li>{$store.city}</li>
+    <li>{$store.area}</li>
+    <li>{$store.lng}</li>
+    <li>{$store.lat}</li>
+    <li>{$distance[$key]}</li>
+</ul>
+{/volist}-->
+</body>
+</html>

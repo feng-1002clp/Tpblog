@@ -1,0 +1,195 @@
+{include file="public/_head"/}
+<!-- Main Container -->
+<div class="main-container container-fluid">
+    <!-- Page Container -->
+    <div class="page-container">
+
+        {include file="public/_left"/}
+        <!-- Page Content -->
+        <div class="page-content">
+            <!-- Page Breadcrumb -->
+            <div class="page-breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-home"></i>&nbsp;文章管理
+                    </li>
+                    <li>文章列表</li>
+                </ul>
+            </div>
+            <!-- /Page Breadcrumb -->
+            <!-- Page Body -->
+            <div class="page-body">
+                <a href="articleadd.html" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i>&nbsp;添加文章</a>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="widget">
+                            <div class="widget-header">
+                                <span class="widget-caption">添加文章</span>
+                                <div class="widget-buttons">
+                                   <!-- <ul class="pagination pagination-sm">
+                                        <li class="disabled"><a href="#"></a></li>
+                                        <li class="active"><a href="#">1</a></li>
+                                        <li><a href="#">2</a></li>
+                                        <li><a href="#">3</a></li>
+                                        <li><a href="#">4</a></li>
+                                        <li><a href="#">»</a></li>
+                                    </ul>-->
+                                    {$articles|raw|labelchanged}
+                                </div>
+                            </div>
+                            <div class="widget-body">
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>文章标题</th>
+                                        <th>文章栏目</th>
+                                        <th>推荐</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    {volist name="articles" id="article"}
+                                    <tr>
+                                        <td>{$article.id}</td>
+                                        <td>{$article.title}</td>
+                                        <td>{$article.cate.catename}</td>
+                                        <td>{if $article.is_top==1}已推荐{else /}未推荐{/if}</td>
+                                        <td>
+                                            {if $article.is_top==1}<a href="#" class="btn btn-sm btn-warning article-top" istop="{$article.is_top}" dataid="{$article.id}">取消推荐</a>
+                                            {else /}<a href="#" class="btn btn-sm btn-blue article-top" istop="{$article.is_top}" dataid="{$article.id}">设为推荐</a>{/if}
+                                            <a href="{:url('admin/article/articleedit',['id'=>$article.id])}" class="btn btn-sm btn-warning">编辑</a>
+                                            <a href="#" class="btn btn-sm btn-danger articledel" dataid="{$article.id}">删除</a>
+                                        </td>
+                                    </tr>
+                                    {/volist}
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Page Body -->
+        </div>
+        <!-- /Page Content -->
+
+    </div>
+</div>
+
+{include file="public/_js"/}
+<script>
+    $(function () {
+        $('.paginationg').addClass('pagination-sm');
+
+        $('.article-top').click(function () {
+            var id = $(this).attr('dataid');
+            var is_top = $(this).attr('istop');
+
+            if (is_top==1){
+                var msg = '确认将此文章取消推荐嘛?';
+            }else{
+                var msg = '确认将此文章设为推荐嘛?';
+            }
+            layer.confirm(msg,{
+                title:'推荐操作设置',
+                icon:3
+            },function (index) {
+                layer.close(index);
+                $.ajax({
+                    url: "{:url('admin/article/articleistop')}",
+                    type: 'post',
+                    data:{id:id,is_top:is_top},
+                    dataType:'json',
+                    success:function (data) {
+                        if (data.code == 1) {
+                            layer.msg(data.msg, {
+                                icon: 1,
+                                anim: 5,
+                            }, function () {
+                                location.href = "{:url('admin/article/articlelist')}";
+                            });
+                        } else {
+                            layer.msg(data.msg, {
+                                icon: 2,
+                                anim: 6,
+                            });
+                        }
+                    }
+                })
+            });
+
+            return false;
+        });
+
+
+        $('.articledel').click(function () {
+            var id = $(this).attr('dataid');
+            layer.confirm('确定删除嘛？', {
+                title: '文章删除',
+                icon: 3,
+                anim: 6,
+            }, function (index) {
+               layer.close(index);
+                $.ajax({
+                    url: "{:url('admin/article/articledel')}",
+                    type: 'post',
+                    data: {id: id},
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.code == 1) {
+                            layer.msg(data.msg, {
+                                icon: 1,
+                                anim: 5,
+                            }, function () {
+                                location.href = "{:url('admin/article/articlelist')}";
+                            });
+                        } else {
+                            layer.msg(data.msg, {
+                                icon: 2,
+                                anim: 6,
+                            });
+                        }
+                    }
+                });
+                return false;
+            });
+            return false;
+        });
+
+
+
+
+
+        $('input[name=sort]').change(function () {
+            var id = $(this).attr('dataid');
+            var sort = $(this).val();
+            $.ajax({
+                url: "{:url('admin/cate/catesort')}",
+                type: 'post',
+                data: {id: id, sort: sort},
+                dataType: 'json',
+                success: function (data) {
+                    if (data.code == 1) {
+                        layer.msg(data.msg, {
+                            icon: 6,
+                            time: 2000,
+                        }, function () {
+                            //  location.href = data.url;
+                        });
+                    } else {
+                        layer.open({
+                            title: '设置排序失败',
+                            icon: 5,
+                            anim: 6,
+                        });
+                    }
+                }
+            });
+
+            return false;
+        });
+    });
+</script>
+
+</body>
+<!--  /Body -->
+</html>

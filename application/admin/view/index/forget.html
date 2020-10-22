@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>忘记密码</title>
+    <link rel="shortcut icon" href="/public/static/admin/img/logo.jpg" type="image/x-icon">
+    <link href="/public/static/admin/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="/public/static/admin/css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="/public/static/admin/css/weather-icons.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="/public/static/admin/lib/layui/css/layui.css">
+    <link id="beyond-link" href="/public/static/admin/css/beyond.min.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div class="login-container">
+    <div class="loginbox bg-white">
+        <form>
+            <div class="loginbox-title">忘记密码</div>
+
+            <div class="loginbox-or">
+                <div class="or-line"></div>
+            </div>
+            <div class="loginbox-textbox">
+                <input type="text" class="form-control" name="username" placeholder="请输入忘记密码的用户名称"/>
+            </div>
+            <div class="loginbox-textbox">
+                <input type="email" class="form-control" name="email" placeholder="请输入绑定的邮箱账号"/>
+            </div>
+            <div class="loginbox-textbox">
+                <div><img src="verify" id="captcha" alt="验证码加载中" width="150px" height="40px"/>
+                    <button type="button" class="layui-btn layui-btn-primary layui-btn-primary" id="refresh">
+                        <i class="layui-icon">&#xe669;</i>
+                    </button>
+                </div>
+                <input type="text" id="code" class="form-control" name="code" placeholder="请输入验证码">
+            </div>
+            <div class="loginbox-forgot">
+                <a href="login">返回登录页面</a>
+            </div>
+            <div class="loginbox-submit">
+                <input type="button" id="submit" class="btn btn-primary btn-block" value="发送邮箱验证码">
+            </div>
+
+        </form>
+    </div>
+
+    <!-- 邮箱验证码弹出层开始 -->
+    <div style="display:none;padding: 20px;" id="emailcode">
+        <form action="" class="layui-form" lay-filter="codeFrm" id="codeFrm">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">验证码:</label>
+                    <div class="layui-input-inline">
+                        <input type="text" autocomplete="off" id="sixcode" name="emailcode" class="layui-input"
+                               placeholder="请输入六位邮箱验证码">
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+    <!--  邮箱验证码弹出层结束 -->
+
+
+    <div class="logobox">
+        <p class="text-center"
+           style="font-size: 18px;font-weight: bold;text-shadow: 3px 3px 3px #ff0000;font-style: italic;">冯自力</p>
+    </div>
+</div>
+
+<script src="/public/static/admin/js/skins.min.js"></script>
+<!--Basic Scripts-->
+<script src="/public/static/admin/js/jquery.min.js"></script>
+<script type="text/javascript" src="/public/static/admin/js/jQuery.md5.js" charset="utf-8"></script>
+<script src="/public/static/admin/js/bootstrap.min.js"></script>
+<script src="/public/static/admin/js/slimscroll/jquery.slimscroll.min.js"></script>
+<!--Beyond Scripts-->
+<script src="/public/static/admin/js/beyond.js"></script>
+<script src="/public/static/admin/lib/layer/layer.js"></script>
+<script src="/public/static/admin/lib/layui/layui.js"></script>
+<script>
+    $(window).bind("load", function () {
+
+        /*Sets Themed Colors Based on Themes*/
+        themeprimary = getThemeColorFromCss('themeprimary');
+        themesecondary = getThemeColorFromCss('themesecondary');
+        themethirdcolor = getThemeColorFromCss('themethirdcolor');
+        themefourthcolor = getThemeColorFromCss('themefourthcolor');
+        themefifthcolor = getThemeColorFromCss('themefifthcolor');
+
+    });
+
+    $("#refresh").click(function (event) {
+        $("#captcha").attr("src", "{:url('admin/index/verify')}?" + Math.random());
+    });
+
+    function refresh() {
+        $("#captcha").attr("src", "{:url('admin/index/verify')}?" + Math.random());
+        document.getElementById("code").value = "";
+        document.getElementById("sixcode").value = "";
+        // $("#sixcode")[0].reset();
+    }
+
+    function post(URL, PARAMS) {
+        var temp = document.createElement("form");
+        temp.action = URL;
+        temp.method = "post";
+        temp.style.display = "none";
+        for (var x in PARAMS) {
+            var opt = document.createElement("textarea");
+            opt.name = x;
+            opt.value = PARAMS[x]; // alert(opt.name)
+            temp.appendChild(opt);
+        }
+        document.body.appendChild(temp);
+        temp.submit();
+        return temp;
+    }
+
+
+    $(function () {
+        $('#submit').click(function () {
+            $.ajax({
+                url: "{:url('admin/index/forget')}",
+                type: 'post',
+                data: $('form').serialize(),  //序列化表单数据
+                dataType: 'json',
+                success: function (data) {
+                    if (data.code == 1) {
+                        layer.msg('验证码已发送，请查看邮箱', {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            var verifyform = layer.open({
+                                type: 1,
+                                title: '邮箱验证码',
+                                content: $("#emailcode"),
+                                area: ['500', '400'],
+                                btnAlign: 'c',
+                                btn: ['<div class="layui-icon layui-icon-release">提交</div>', '<div class="layui-icon layui-icon-close">关闭</div>']
+                                , yes: function (index, layero) {
+                                    var sixcode = document.getElementById("sixcode").value
+                                    var md5_sixcode = $.md5(sixcode);
+                                    if (md5_sixcode == data.msg) {
+                                        var username = data.data['username'];
+                                        var email = data.data['email'];
+                                        $.ajax({
+                                            url: "{:url('admin/index/personal')}",
+                                            type: 'post',
+                                            "data": data,    //data数据
+                                            dataType: 'json',
+                                            success: function (data) {
+                                                if (data.code == 1) {
+
+                                                    layer.msg(data.msg);
+                                                    layer.close(verifyform);
+                                                    $.post('postpersonal', data, function (obj) {
+                                                        post('postpersonal', {username: username, email: email});
+                                                    });
+                                                    /* location.href='personal';*/
+                                                } else {
+                                                    layer.open({
+                                                        title: '验证失败',
+                                                        content: data.msg,
+                                                        icon: 5,
+                                                        anim: 6,
+                                                    });
+                                                }
+                                            }
+                                        });
+                                    } else {
+                                        layer.msg('验证失败，请重新验证！');
+                                        layer.close(verifyform);
+                                        refresh();
+                                    }
+                                },
+                                btn2: function (index, layero) {
+                                    refresh();
+                                    return true;
+                                },
+                            })
+                        });
+                    } else {
+                        refresh();
+                        layer.open({
+                            title: '发送验证码失败',
+                            content: data.msg,
+                            icon: 2,
+                            anim: 6,
+                        });
+                    }
+                }
+
+            });
+            return false;
+        })
+    })
+</script>
+</body>
+<!--  /Body -->
+</html>
