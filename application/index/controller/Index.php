@@ -103,8 +103,9 @@ class Index extends Base
     //  设置gitwebHook钩子 实现服务器自动更新代码
     public function webhook()
     {
+        $count = $_POST['secret'];
+        return $count;
 
-        echo 555;
     }
 
 
