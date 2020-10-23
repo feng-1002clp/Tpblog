@@ -79,5 +79,12 @@ class Admin extends Base
         //echo phpinfo();
     }
 
+    //  设置gitwebHook钩子 实现服务器自动更新代码
+    public function webhook()
+    {
+
+        echo 555;
+    }
+
 
 }
