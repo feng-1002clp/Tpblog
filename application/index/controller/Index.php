@@ -109,7 +109,7 @@ class Index extends Base
        */
 
         header('Content-type:text/html;charset=utf-8');
-        $output = shell_exec("cd /www/wwwroot/fzltpblog.com/tpblog; sudo -u root git pull origin master<&1");
+        $output = shell_exec("cd /www/wwwroot/fzltpblog.com/tpblog;git pull origin master");
         echo "<pre>$output</pre>";
     }
 
