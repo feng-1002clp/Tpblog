@@ -100,8 +100,6 @@ Route::get('think', function () {
         'get|post');
     \think\facade\Route::rule('/phpinfo', 'admin/admin/phpinfo',
         'get');
-    \think\facade\Route::rule('/webhook', 'admin/admin/webhook',
-        'get');
 
 
 });
