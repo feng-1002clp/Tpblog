@@ -108,10 +108,9 @@ class Index extends Base
          一般只是验证密码是否与之前后台的一样
        */
 
-        /*header('Content-type:text/html;charset=utf-8');
+        header('Content-type:text/html;charset=utf-8');
         $output = shell_exec("cd /www/wwwroot/fzltpblog.com/tpblog; sudo -u root git pull origin master<&1");
-        echo "<pre>$output</pre>";*/
-        echo 666;
+        echo "<pre>$output</pre>";
     }
 
 
