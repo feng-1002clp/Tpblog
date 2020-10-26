@@ -48,7 +48,7 @@ class Admin extends Model
 
                     $redis->inc('locked_' + $login_ip);
                     $errorCount = $redis->get('locked_' + $login_ip);
-                    $residue = 5 - $errorCount;
+                    $residue = 5 - intval($errorCount);
                     echo $errorCount;
                     return '用户名或者密码错误,输入错误5次将会禁止登录!您还剩余' + $residue + '次!';
                 } else {
