@@ -65,19 +65,18 @@ class Admin extends Base
         //两种方法配置使用redis tp5.1中
 
         //  配置cache.php的方式
-        $redis = new Redis();
-        $redis->set('key1', 'value1');
-        $getKey1 = $redis->get('key1');
-        echo $getKey1;
-        echo '<br>';
+        /* $redis = new Redis();
+         $redis->set('key1', 'value1');
+         $getKey1 = $redis->get('key1');
+         echo $getKey1;
+         echo '<br>';*/
 
         //配置Redis.php的方式
         /* Cache::store('redis')->set('key2', 'value2');
          $getKey2 = Cache::store('redis')->get('key2');
          echo $getKey2;*/
 
-        //echo phpinfo();
+        echo phpinfo();
     }
-
 
 }

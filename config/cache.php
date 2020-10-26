@@ -25,7 +25,7 @@ return [
     //
     'redis' => [
         'Type' => 'Redis',
-        'host' => '127.0.0.1',
+        'host' => '81.68.190.79',
         'port' => '6379',
         'expire' => 0,
     ]

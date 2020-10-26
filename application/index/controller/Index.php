@@ -77,18 +77,18 @@ class Index extends Base
     public function loginout()
     {
         session(null);
-        if (session('?index.id')){
+        if (session('?index.id')) {
             $this->error('退出失败');
-        }else{
-            $this->success('退出成功','index/index/index');
+        } else {
+            $this->success('退出成功', 'index/index/index');
         }
 
 
     }
 
     //搜索
-    public function search(){
-
+    public function search()
+    {
 
 
     }
@@ -98,6 +98,19 @@ class Index extends Base
     {
 
 
+    }
+
+    //  设置gitwebHook钩子 实现服务器自动更新代码
+    public function webhook()
+    {
+        /* 数据校验省略，
+          post过来的是json数据，
+         一般只是验证密码是否与之前后台的一样
+       */
+
+        header('Content-type:text/html;charset=utf-8');
+        $output = shell_exec("cd /www/wwwroot/fzltpblog.com/tpblog;sudo -u root git pull origin master");
+        echo "<pre>$output</pre>";
     }
 
 
