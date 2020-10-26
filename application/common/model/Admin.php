@@ -45,7 +45,7 @@ class Admin extends Model
                 $login_ip = request()->ip();
 
                 if (!empty($redis->get($login_ip))) {
-                    return "'+$login_ip+'";
+                    return '666';
                     /* $redis->inc('locked_' + $login_ip + '');
                      $errorCount = $redis->get('locked_' + $login_ip + '');
                      // $residue = 5 - intval($errorCount);
