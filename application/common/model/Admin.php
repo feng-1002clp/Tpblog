@@ -53,7 +53,7 @@ class Admin extends Model
                      echo $errorCount;*/
                     return '用户名或者密码错误,输入错误5次将会禁止登录!您还剩余次!';
                 } else {
-                    // $redis->set('locked_' + $login_ip + '', '1');
+                    $redis->set($login_ip, '1');
                     return '用户名或者密码错误,输入错误5次将会禁止登录!您还剩余4次机会!';
                 }
             }
