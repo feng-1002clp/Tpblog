@@ -2,6 +2,7 @@
 
 namespace app\admin\controller;
 
+use think\cache\driver\Redis;
 use think\captcha\Captcha;
 use think\Controller;
 use think\Db;
@@ -9,14 +10,15 @@ use think\Db;
 class Index extends Controller
 {
     // 初始化   过滤用户重复登录
-    public function  initialize()
+    public function initialize()
     {
-        if (session('?admin.id')){
+        if (session('?admin.id')) {
             $this->redirect('admin/home/index');
         }
     }
 
-    public function index(){
+    public function index()
+    {
         return view('login');
     }
 
@@ -29,6 +31,15 @@ class Index extends Controller
                 'username' => input('post.username'),
                 'password' => input('post.password')
             ];
+
+            //使用redis
+            $redis = new Redis();
+            //得到登录方ip地址
+            $login_ip = request()->ip();
+            if ($redis->get($login_ip) == '5') {
+                $remainingTimes =  $redis->TTL($login_ip);
+                $this->error('你已被锁定，请于'.$remainingTimes.'秒后重试！');
+            }
 
             $result = model('Admin')->login($data);
             //由模型层得到验证数据  为1登陆成功且为管理员 为0则返回错误信息
@@ -136,6 +147,7 @@ class Index extends Controller
 
         return view();
     }
+
     //跳转到修改密码页面
     public function postpersonal()
     {
@@ -146,7 +158,8 @@ class Index extends Controller
         return $this->fetch('personal');
     }
 
-    public function pwdchanged(){
+    public function pwdchanged()
+    {
 
         //后台接收数据注册   Ajax 提交方式
         if ($this->request->isAjax()) {
@@ -157,8 +170,8 @@ class Index extends Controller
                 'repassword' => input('post.repassword'),
             ];
             $result = model('Admin')->pwdchanged($data);   //模型判断验证
-            if ($result==1) {
-                $this->success('密码更改成功','admin/index/login');
+            if ($result == 1) {
+                $this->success('密码更改成功', 'admin/index/login');
             } else {
                 $this->error($result);
             }
@@ -167,10 +180,6 @@ class Index extends Controller
 
 
     }
-
-
-
-
 
 
 }

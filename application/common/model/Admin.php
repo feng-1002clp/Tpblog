@@ -51,7 +51,8 @@ class Admin extends Model
                     //该次错误的次数
                     $errorCount = $redis->get($login_ip);
                     if ($errorCount == '5') {
-                        return '您已被锁定，不可登录！';
+                        $redis->set($login_ip, '5', 300);
+                        return '您已被锁定，请五分钟后登录！';
                     } else {
                         $residue = 5 - intval($errorCount);
                         return '用户名或者密码错误!您还剩余' . $residue . '次机会!';
