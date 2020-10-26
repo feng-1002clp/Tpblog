@@ -1,7 +1,6 @@
 /runtime/*
 /backup/*
 /public/uploads/*
-/config/database.php
 /config/config.php
 composer.lock
 install.lock
