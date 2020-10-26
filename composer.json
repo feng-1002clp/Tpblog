@@ -19,15 +19,8 @@
         "php": ">=7.0",
         "topthink/framework": "5.1.*",
         "phpmailer/phpmailer": "^6.1",
-<<<<<<< HEAD
         "topthink/think-captcha": "2.0.*",
         "riverslei/payment": "^5.1"
-=======
-        "topthink/think-captcha": "2.*",
-        "phpoffice/phpspreadsheet": "^1.15",
-        "phpoffice/phpexcel": "^1.8",
-        "topthink/think-swoole": "2.0.*"
->>>>>>> a12beaf8bdf9ac202dc80a0ec971e2afd729645b
     },
     "autoload": {
         "psr-4": {
