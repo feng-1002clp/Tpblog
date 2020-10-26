@@ -71,8 +71,7 @@ class Admin extends Base
         echo $getKey1;
         echo '<br>';
 
-        $user_ip = $this->get_ip();
-        echo $user_ip;
+        echo self::get_ip();
         echo request()->ip();
         //配置Redis.php的方式
         /* Cache::store('redis')->set('key2', 'value2');
@@ -86,7 +85,7 @@ class Admin extends Base
     /*
     * 获取用户真实IP地址
     */
-    public function get_ip()
+    public static function get_ip()
     {
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
             $cip = $_SERVER['HTTP_CLIENT_IP'];
