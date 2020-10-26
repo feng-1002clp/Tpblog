@@ -2,6 +2,7 @@
 
 namespace app\common\model;
 
+use think\cache\driver\Redis;
 use think\Model;
 use think\model\concern\SoftDelete;
 
