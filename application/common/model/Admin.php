@@ -44,15 +44,15 @@ class Admin extends Model
                 //得到登录方ip地址
                 $login_ip = request()->ip();
 
-                if (!empty($redis->get('locked_' + $login_ip))) {
+                if (!empty($redis->get('locked_' + $login_ip + ''))) {
 
-                    $redis->inc('locked_' + $login_ip);
-                    $errorCount = $redis->get('locked_' + $login_ip);
-                   // $residue = 5 - intval($errorCount);
+                    $redis->inc('locked_' + $login_ip + '');
+                    $errorCount = $redis->get('locked_' + $login_ip + '');
+                    // $residue = 5 - intval($errorCount);
                     echo $errorCount;
-                    return '用户名或者密码错误,输入错误5次将会禁止登录!您还剩余' +  + '次!';
+                    return '用户名或者密码错误,输入错误5次将会禁止登录!您还剩余' + +'次!';
                 } else {
-                    $redis->set('locked_' + $login_ip, '1');
+                    $redis->set('locked_' + $login_ip + '', '1');
                     return '用户名或者密码错误,输入错误5次将会禁止登录!您还剩余4次机会!';
                 }
 
