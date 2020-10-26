@@ -44,16 +44,16 @@ class Admin extends Model
                 $redis = new Redis();
                 //得到登录方ip地址
                 $login_ip = request()->ip();
-
+                //判断该 ip是否是否被锁定 或 是否处于 待锁定区
                 if (!empty($redis->get($login_ip))) {
-                    /* return '666';
-                     $redis->inc('locked_' + $login_ip + '');
-                     $errorCount = $redis->get('locked_' + $login_ip + '');
-                     // $residue = 5 - intval($errorCount);
-                     echo $errorCount;*/
-                    return '用户名或者密码错误,输入错误5次将会禁止登录!您还剩余次!';
+                    // 错误五次将锁定  设置待锁定ip 错误次数 增加 1
+                    $redis->inc($login_ip);
+                    //该次错误的次数
+                    $errorCount = $redis->get($login_ip);
+                    $residue = 5 - intval($errorCount);
+                    return '用户名或者密码错误,输入错误5次将会禁止登录!您还剩余' + $residue + '次!';
                 } else {
-                    $redis->set($login_ip, '1');
+                    $redis->set($login_ip, '1', 300);
                     return '用户名或者密码错误,输入错误5次将会禁止登录!您还剩余4次机会!';
                 }
             }
