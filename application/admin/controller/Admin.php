@@ -71,6 +71,8 @@ class Admin extends Base
          echo $getKey1;
          echo '<br>';
 
+
+        echo request()->ip();
         //配置Redis.php的方式
         /* Cache::store('redis')->set('key2', 'value2');
          $getKey2 = Cache::store('redis')->get('key2');
