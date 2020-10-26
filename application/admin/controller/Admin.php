@@ -4,7 +4,6 @@
 namespace app\admin\controller;
 
 
-use think\Cache;
 use think\cache\driver\Redis;
 
 class Admin extends Base
@@ -71,13 +70,11 @@ class Admin extends Base
         $getKey1 = $redis->get('key1');
         echo $getKey1;
         echo '<br>';
-
         echo request()->ip();
         //配置Redis.php的方式
         /* Cache::store('redis')->set('key2', 'value2');
          $getKey2 = Cache::store('redis')->get('key2');
          echo $getKey2;*/
-
 
         //echo phpinfo();
     }
