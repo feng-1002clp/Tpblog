@@ -2,6 +2,7 @@
 
 namespace app\common\model;
 
+use think\cache\driver\Redis;
 use think\Model;
 use think\model\concern\SoftDelete;
 
@@ -39,7 +40,17 @@ class Admin extends Model
                 return 1;
 
             } else {
-                return '用户名或者密码错误！';
+                $redis = new Redis();
+                //得到登方ip地址
+                $login_ip = request()->ip();
+                echo $redis->get('locked_' + $login_ip);
+
+                $redis->set('locked_' + $login_ip, '1');
+                $getKey1 = $redis->get('key1');
+                echo $getKey1;
+                echo '<br>';
+
+                return '用户名或者密码错误,输入错误5次将会禁止登录！';
             }
 
         }
@@ -85,8 +96,10 @@ class Admin extends Model
         }
 
     }
+
     //个人验证
-    public function personal($data){
+    public function personal($data)
+    {
 
         $result = $this->where(['username' => $data['username'], 'email' => $data['email']])->find();
 
@@ -98,7 +111,8 @@ class Admin extends Model
     }
 
     //密码更改
-    public function  pwdchanged($data){
+    public function pwdchanged($data)
+    {
         $validate = new \app\common\validate\Admin();
 
         if (!$validate->scene('pwdchanged')->check($data)) {
@@ -114,11 +128,11 @@ class Admin extends Model
         }
 
 
-
     }
 
     //管理员权限操作
-    public function  adminissuper($data){
+    public function adminissuper($data)
+    {
         $validate = new \app\common\validate\Admin();
         if (!$validate->scene('adminissuper')->check($data)) {
             return $validate->getError();
@@ -126,13 +140,12 @@ class Admin extends Model
         $adminInfo = $this->find($data['id']);
         $adminInfo->is_super = $data['is_super'];
         $result = $adminInfo->save();
-        if ($result){
+        if ($result) {
             return 1;
-        }else{
+        } else {
             return "操作失败!";
         }
     }
-
 
 
 }

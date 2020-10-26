@@ -67,11 +67,10 @@ class Admin extends Base
         //  配置cache.php的方式
         $redis = new Redis();
         $redis->set('key1', 'value1');
-        $getKey1 = $redis->get('key1');
+        $getKey1 = $redis->get('key2');
         echo $getKey1;
         echo '<br>';
 
-        echo self::get_ip();
         echo request()->ip();
         //配置Redis.php的方式
         /* Cache::store('redis')->set('key2', 'value2');
@@ -81,26 +80,6 @@ class Admin extends Base
         //echo phpinfo();
     }
 
-
-    /*
-    * 获取用户真实IP地址
-    */
-    public static function get_ip()
-    {
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-            $cip = $_SERVER['HTTP_CLIENT_IP'];
-        } else if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $cip = $_SERVER["HTTP_X_FORWARDED_FOR"];
-        } else if (!empty($_SERVER["REMOTE_ADDR"])) {
-            $cip = $_SERVER["REMOTE_ADDR"];
-        } else {
-            $cip = '';
-        }
-        preg_match("/[\d\.]{7,15}/", $cip, $cips);
-        $cip = isset($cips[0]) ? $cips[0] : 'unknown';
-        unset($cips);
-        return $cip;
-    }
 
 
 }
