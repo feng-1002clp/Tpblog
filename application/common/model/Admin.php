@@ -50,7 +50,7 @@ class Admin extends Model
                     $redis->inc($login_ip);
                     //该次错误的次数
                     $errorCount = $redis->get($login_ip);
-                    return '用户名或者密码错误,输入错误5次将会禁止登录!您这是第' + $errorCount + '次!';
+                    return '666';
                 } else {
                     $redis->set($login_ip, '1', 300);
                     return '用户名或者密码错误,输入错误5次将会禁止登录!您还剩余4次机会!';
